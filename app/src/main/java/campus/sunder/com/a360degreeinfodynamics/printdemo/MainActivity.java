@@ -14,6 +14,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.print.PrintHelper;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -42,9 +43,13 @@ public class MainActivity extends FragmentActivity {
         image = (ImageView) findViewById(R.id.image);
 
         //Used for fetch image from gallery
-    /* Intent intent = new Intent(Intent.ACTION_PICK,
+
+
+
+
+   Intent intent = new Intent(Intent.ACTION_PICK,
                 MediaStore.Images.Media.INTERNAL_CONTENT_URI);
-        intent.setType("image*//*");
+        intent.setType("image/*");
         intent.putExtra("crop", "true");
         intent.putExtra("scale", true);
         intent.putExtra("outputX", 256);
@@ -52,12 +57,12 @@ public class MainActivity extends FragmentActivity {
         intent.putExtra("aspectX", 1);
         intent.putExtra("aspectY", 1);
         intent.putExtra("return-data", true);
-        startActivityForResult(intent, 11);*/
+        startActivityForResult(intent, 11);
 
 
 
 
-        btnSaveExternalStorageDirectory = (Button) findViewById(R.id.saveExternalStorageDirectory);
+     //   btnSaveExternalStorageDirectory = (Button) findViewById(R.id.saveExternalStorageDirectory);
 
 
         //Permission for 23+ api
@@ -66,16 +71,8 @@ public class MainActivity extends FragmentActivity {
         }
 
 
-  //
-
-        btnSaveExternalStorageDirectory.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Bitmap bitmap = ((BitmapDrawable) image.getDrawable()).getBitmap();
-
-
-              //Use for store image into internal store
-                //always save as
+        //Use for store image into internal store
+        //always save as
                /* String fileName = "test.jpg";
                 ByteArrayOutputStream bytes = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 40, bytes);
@@ -107,7 +104,10 @@ public class MainActivity extends FragmentActivity {
 
 
 
-
+       /*btnSaveExternalStorageDirectory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bitmap bitmap = ((BitmapDrawable) image.getDrawable()).getBitmap();
 
 
                //Use for store image into media
@@ -120,10 +120,9 @@ public class MainActivity extends FragmentActivity {
                 Toast.makeText(MainActivity.this,
                         savedURL,
                         Toast.LENGTH_LONG).show();
+                            }
 
-
-            }
-        });
+        });*/
     }
 
         protected boolean shouldAskPermissions() {
@@ -143,7 +142,7 @@ public class MainActivity extends FragmentActivity {
 
 
 
-    /*  @Override
+    @Override
       protected void onActivityResult(int requestCode, int resultCode, Intent data) {
           super.onActivityResult(requestCode, resultCode, data);
           if (resultCode != RESULT_OK) {
@@ -156,36 +155,19 @@ public class MainActivity extends FragmentActivity {
                   image= (ImageView) findViewById(R.id.image);
                   Bitmap ProfilePic = extras.getParcelable("data");
                   image.setImageBitmap(ProfilePic);
+                  PrintHelper photoPrinter = new PrintHelper(MainActivity.this);
+                  photoPrinter.setScaleMode(PrintHelper.SCALE_MODE_FIT);
+                  if (ProfilePic != null) {
+                      // Send it to the print helper
+                      photoPrinter.printBitmap("PrintShop", ProfilePic);
+                  }
 
               }
           }
 
 
-      }*/
-    public void saveImageToExternal(String imgName, Bitmap bm) throws IOException {
-//Create Path to save Image
-        File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES + "Sunder_sharma"); //Creates app specific folder
-        path.mkdirs();
-        File imageFile = new File(path, imgName + ".png"); // Imagename.png
-        FileOutputStream out = new FileOutputStream(imageFile);
-        try {
-            bm.compress(Bitmap.CompressFormat.PNG, 100, out); // Compress Image
-            out.flush();
-            out.close();
+      }
 
-            // Tell the media scanner about the new file so that it is
-            // immediately available to the user.
-            MediaScannerConnection.scanFile(MainActivity.this, new String[]{imageFile.getAbsolutePath()}, null, new MediaScannerConnection.OnScanCompletedListener() {
-                public void onScanCompleted(String path, Uri uri) {
-                    Log.i("ExternalStorage", "Scanned " + path + ":");
-                    Log.i("ExternalStorage", "-> uri=" + uri);
-                }
-            });
-        } catch (Exception e) {
-            throw new IOException();
-        }
-
-    }
 }
 
 
